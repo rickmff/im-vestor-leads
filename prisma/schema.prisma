@@ -1,0 +1,59 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "esm"
+  runtime      = "nodejs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  ENTREPRENEUR
+  INVESTOR
+}
+
+enum Sector {
+  TECHNOLOGY
+  HEALTHCARE
+  FINTECH
+  EDTECH
+  CLEANTECH
+  ECOMMERCE
+  SAAS
+  AGRITECH
+  PROPTECH
+  BIOTECH
+}
+
+enum InvestmentRange {
+  R_10K_50K   @map("10K-50K")
+  R_50K_200K  @map("50K-200K")
+  R_200K_500K @map("200K-500K")
+  R_500K_1M   @map("500K-1M")
+  R_1M_5M     @map("1M-5M")
+  R_5M_PLUS   @map("5M+")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  clerkId      String   @unique
+  email        String   @unique
+  name         String?
+  country      String?
+  role         UserRole @default(ENTREPRENEUR)
+  referralCode String   @unique
+
+  referredByCode String?
+  referrer       User?   @relation("Referrals", fields: [referredByCode], references: [referralCode])
+  referrals      User[]  @relation("Referrals")
+
+  investmentCapacity InvestmentRange?
+  sectors            Sector[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
