@@ -3,7 +3,13 @@ import { InvestmentRange, Sector, UserRole } from "@/generated/prisma/enums";
 export const ROLE_LABELS: Record<UserRole, string> = {
 	[UserRole.ENTREPRENEUR]: "Entrepreneur",
 	[UserRole.INVESTOR]: "Investor",
+	[UserRole.ADMIN]: "Admin",
 };
+
+export const SIGNUP_ROLES: UserRole[] = [
+	UserRole.ENTREPRENEUR,
+	UserRole.INVESTOR,
+];
 
 export const SECTOR_LABELS: Record<Sector, string> = {
 	[Sector.TECHNOLOGY]: "Technology",

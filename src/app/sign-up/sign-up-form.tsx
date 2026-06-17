@@ -14,19 +14,15 @@ import {
 	NativeSelectOption,
 } from "@/components/ui/native-select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import type {
-	InvestmentRange,
-	Sector,
-	UserRole,
-} from "@/generated/prisma/enums";
+import type { InvestmentRange, Sector } from "@/generated/prisma/enums";
 import {
 	COUNTRIES,
 	INVESTMENT_RANGE_LABELS,
 	INVESTMENT_RANGES,
 	ROLE_LABELS,
-	ROLES,
 	SECTOR_LABELS,
 	SECTORS,
+	SIGNUP_ROLES,
 } from "@/lib/constants";
 import { completeSignup } from "./actions";
 
@@ -51,7 +47,7 @@ export function SignUpForm({
 	const [password, setPassword] = useState("");
 	const [name, setName] = useState("");
 	const [country, setCountry] = useState("");
-	const [role, setRole] = useState<UserRole>("ENTREPRENEUR");
+	const [role, setRole] = useState<"ENTREPRENEUR" | "INVESTOR">("ENTREPRENEUR");
 	const [referredByCode, setReferredByCode] = useState("");
 	const [capacity, setCapacity] = useState<InvestmentRange | "">("");
 	const [sectors, setSectors] = useState<Sector[]>([]);
@@ -206,10 +202,12 @@ export function SignUpForm({
 				<Label>I am a…</Label>
 				<Tabs
 					value={role}
-					onValueChange={(value) => setRole(value as UserRole)}
+					onValueChange={(value) =>
+						setRole(value as "ENTREPRENEUR" | "INVESTOR")
+					}
 				>
 					<TabsList className="h-10 w-full">
-						{ROLES.map((r) => (
+						{SIGNUP_ROLES.map((r) => (
 							<TabsTrigger key={r} value={r} className="text-sm">
 								{ROLE_LABELS[r]}
 							</TabsTrigger>

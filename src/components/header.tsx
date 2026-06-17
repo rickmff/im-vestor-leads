@@ -17,8 +17,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 
+import { getMyUserId } from "@/app/messages/notifications.actions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
 	DropdownMenu,
@@ -38,12 +41,13 @@ import {
 	type Language,
 	useLanguage,
 } from "@/contexts/LanguageContext";
+import { useUnreadCount } from "@/hooks/use-unread-count";
 
 const NAV_LINKS = [
 	{ label: "Explore", icon: SearchIcon },
 	{ href: "/dashboard", label: "Dashboard", icon: LayoutDashboardIcon },
 	{ label: "Inbox", icon: BellIcon },
-	{ label: "Chats", icon: MessageSquareIcon },
+	{ href: "/messages", label: "Chats", icon: MessageSquareIcon },
 ] satisfies { href?: string; label: string; icon: LucideIcon }[];
 
 export const Header = () => {
@@ -73,20 +77,44 @@ export const Header = () => {
 
 const NavLinks = () => {
 	const pathname = usePathname();
+	const [userId, setUserId] = useState<string | null>(null);
+	const { count, setCount, refresh } = useUnreadCount(userId);
+
+	useEffect(() => {
+		void getMyUserId().then((r) => {
+			if (r.ok) setUserId(r.data);
+		});
+	}, []);
+
+	useEffect(() => {
+		if (pathname?.startsWith("/messages")) {
+			setCount(0);
+			void refresh();
+		}
+	}, [pathname, setCount, refresh]);
 
 	return (
 		<nav className="hidden items-center gap-1 md:flex">
-			{NAV_LINKS.map(({ href, label, icon: Icon }) => (
-				<Button
-					key={label}
-					variant={href && pathname === href ? "secondary" : "ghost"}
-					size="sm"
-					{...(href ? { render: <Link href={href} /> } : {})}
-				>
-					<Icon className="size-4" />
-					{label}
-				</Button>
-			))}
+			{NAV_LINKS.map(({ href, label, icon: Icon }) => {
+				const showBadge = href === "/messages" && count > 0;
+				return (
+					<Button
+						key={label}
+						variant={href && pathname === href ? "secondary" : "ghost"}
+						size="sm"
+						className="relative"
+						{...(href ? { render: <Link href={href} /> } : {})}
+					>
+						<Icon className="size-4" />
+						{label}
+						{showBadge ? (
+							<Badge className="ml-1 h-4 min-w-4 justify-center rounded-full px-1 text-[10px]">
+								{count > 99 ? "99+" : count}
+							</Badge>
+						) : null}
+					</Button>
+				);
+			})}
 		</nav>
 	);
 };
