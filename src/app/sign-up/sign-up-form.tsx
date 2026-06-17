@@ -4,11 +4,7 @@ import { useSignUp } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
-import type {
-	InvestmentRange,
-	Sector,
-	UserRole,
-} from "@/generated/prisma/enums";
+import type { InvestmentRange, Sector } from "@/generated/prisma/enums";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -22,10 +18,10 @@ import {
 	COUNTRIES,
 	INVESTMENT_RANGES,
 	INVESTMENT_RANGE_LABELS,
-	ROLES,
 	ROLE_LABELS,
 	SECTORS,
 	SECTOR_LABELS,
+	SIGNUP_ROLES,
 } from "@/lib/constants";
 import { completeSignup } from "./actions";
 
@@ -40,7 +36,9 @@ export function SignUpForm() {
 	const [password, setPassword] = useState("");
 	const [name, setName] = useState("");
 	const [country, setCountry] = useState("");
-	const [role, setRole] = useState<UserRole>("ENTREPRENEUR");
+	const [role, setRole] = useState<"ENTREPRENEUR" | "INVESTOR">(
+		"ENTREPRENEUR",
+	);
 	const [referredByCode, setReferredByCode] = useState("");
 	const [capacity, setCapacity] = useState<InvestmentRange | "">("");
 	const [sectors, setSectors] = useState<Sector[]>([]);
@@ -191,10 +189,12 @@ export function SignUpForm() {
 				<Label>I am a…</Label>
 				<Tabs
 					value={role}
-					onValueChange={(value) => setRole(value as UserRole)}
+					onValueChange={(value) =>
+						setRole(value as "ENTREPRENEUR" | "INVESTOR")
+					}
 				>
 					<TabsList className="h-10 w-full">
-						{ROLES.map((r) => (
+						{SIGNUP_ROLES.map((r) => (
 							<TabsTrigger key={r} value={r} className="text-sm">
 								{ROLE_LABELS[r]}
 							</TabsTrigger>

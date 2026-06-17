@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 
+import { MessagesNavButton } from "@/components/messages/messages-nav-button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -45,47 +46,53 @@ export const Header = () => {
 
 				{/* Right side */}
 				{isLoaded && isSignedIn ? (
-					<DropdownMenu>
-						<DropdownMenuTrigger
-							render={
-								<Button variant="ghost" className="flex items-center gap-2" />
-							}
-						>
-							<span className="hidden md:inline">{user?.firstName}</span>
-							<Avatar className="size-6">
-								<AvatarImage src={user?.imageUrl} alt="Profile" />
-								<AvatarFallback>
-									<UserIcon className="size-4" />
-								</AvatarFallback>
-							</Avatar>
-						</DropdownMenuTrigger>
-						<DropdownMenuContent align="end">
-							<DropdownMenuItem onClick={() => router.push("/profile")}>
-								<UserIcon className="mr-2 size-4" />
-								Profile
-							</DropdownMenuItem>
-							<DropdownMenuItem
-								onClick={() =>
-									setTheme(resolvedTheme === "dark" ? "light" : "dark")
+					<div className="flex items-center gap-1">
+						<MessagesNavButton />
+						<DropdownMenu>
+							<DropdownMenuTrigger
+								render={
+									<Button
+										variant="ghost"
+										className="flex items-center gap-2"
+									/>
 								}
 							>
-								{resolvedTheme === "dark" ? (
-									<SunIcon className="mr-2 size-4" />
-								) : (
-									<MoonIcon className="mr-2 size-4" />
-								)}
-								{resolvedTheme === "dark" ? "Light mode" : "Dark mode"}
-							</DropdownMenuItem>
-							<DropdownMenuSeparator />
-							<DropdownMenuItem
-								variant="destructive"
-								onClick={() => signOut({ redirectUrl: "/" })}
-							>
-								<LogOutIcon className="mr-2 size-4" />
-								Sign out
-							</DropdownMenuItem>
-						</DropdownMenuContent>
-					</DropdownMenu>
+								<span className="hidden md:inline">{user?.firstName}</span>
+								<Avatar className="size-6">
+									<AvatarImage src={user?.imageUrl} alt="Profile" />
+									<AvatarFallback>
+										<UserIcon className="size-4" />
+									</AvatarFallback>
+								</Avatar>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent align="end">
+								<DropdownMenuItem onClick={() => router.push("/profile")}>
+									<UserIcon className="mr-2 size-4" />
+									Profile
+								</DropdownMenuItem>
+								<DropdownMenuItem
+									onClick={() =>
+										setTheme(resolvedTheme === "dark" ? "light" : "dark")
+									}
+								>
+									{resolvedTheme === "dark" ? (
+										<SunIcon className="mr-2 size-4" />
+									) : (
+										<MoonIcon className="mr-2 size-4" />
+									)}
+									{resolvedTheme === "dark" ? "Light mode" : "Dark mode"}
+								</DropdownMenuItem>
+								<DropdownMenuSeparator />
+								<DropdownMenuItem
+									variant="destructive"
+									onClick={() => signOut({ redirectUrl: "/" })}
+								>
+									<LogOutIcon className="mr-2 size-4" />
+									Sign out
+								</DropdownMenuItem>
+							</DropdownMenuContent>
+						</DropdownMenu>
+					</div>
 				) : (
 					<div className="flex items-center gap-2">
 						<LanguageSwitcher />

@@ -12,6 +12,11 @@ datasource db {
 enum UserRole {
   ENTREPRENEUR
   INVESTOR
+  ADMIN
+}
+
+enum NotificationType {
+  MESSAGE_RECEIVED
 }
 
 enum Sector {
@@ -52,8 +57,66 @@ model User {
   investmentCapacity InvestmentRange?
   sectors            Sector[]
 
+  lastSeenAt DateTime?
+
+  sentMessages  Message[]      @relation("SentMessages")
+  conversations Conversation[] @relation("ConversationParticipants")
+  notifications Notification[] @relation("UserNotifications")
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@map("users")
+}
+
+model Conversation {
+  id           String    @id @default(cuid())
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  messages     Message[]
+  participants User[]    @relation("ConversationParticipants")
+
+  @@index([updatedAt])
+  @@map("conversations")
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  content        String
+  createdAt      DateTime     @default(now())
+  readAt         DateTime?
+  senderId       String
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender         User         @relation("SentMessages", fields: [senderId], references: [id])
+
+  @@index([conversationId, createdAt])
+  @@index([conversationId, senderId, readAt])
+  @@index([senderId])
+  @@map("messages")
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  createdAt DateTime         @default(now())
+  type      NotificationType
+  read      Boolean          @default(false)
+  userId    String
+  senderId  String?
+  message   String?
+  user      User             @relation("UserNotifications", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([userId, read])
+  @@map("notifications")
+}
+
+model BannedWord {
+  id        String   @id @default(cuid())
+  word      String   @unique
+  createdAt DateTime @default(now())
+  createdBy String
+
+  @@index([word])
+  @@map("banned_words")
 }
