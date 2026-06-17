@@ -2,7 +2,11 @@
 
 import Image from "next/image";
 
-import { type Language, useLanguage } from "@/contexts/LanguageContext";
+import {
+	LANGUAGES,
+	type Language,
+	useLanguage,
+} from "@/contexts/LanguageContext";
 import {
 	Select,
 	SelectContent,
@@ -11,10 +15,7 @@ import {
 	SelectValue,
 } from "./select";
 
-const languages = [
-	{ code: "en-US", name: "English (US)", flag: "US" },
-	{ code: "pt-PT", name: "Português (PT)", flag: "PT" },
-] as const;
+const languages = LANGUAGES;
 
 const LanguageFlag = ({
 	countryCode,
@@ -59,7 +60,7 @@ export const LanguageSwitcher = () => {
 					</div>
 				</SelectValue>
 			</SelectTrigger>
-			<SelectContent>
+			<SelectContent align="end" alignItemWithTrigger={false}>
 				{languages.map((lang) => (
 					<SelectItem
 						key={lang.code}
