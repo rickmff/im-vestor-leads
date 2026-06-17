@@ -1,112 +1,218 @@
 "use client";
 
-import { SignInButton, SignUpButton, useClerk, useUser } from "@clerk/nextjs";
-import { LogOutIcon, MoonIcon, SunIcon, UserIcon } from "lucide-react";
+import { useClerk, useUser } from "@clerk/nextjs";
+import {
+	BellIcon,
+	GlobeIcon,
+	LayoutDashboardIcon,
+	LogOutIcon,
+	type LucideIcon,
+	MessageSquareIcon,
+	MoonIcon,
+	SearchIcon,
+	SunIcon,
+	UserIcon,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 
-import { MessagesNavButton } from "@/components/messages/messages-nav-button";
+import { getMyUserId } from "@/app/messages/notifications.actions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
+	DropdownMenuRadioGroup,
+	DropdownMenuRadioItem,
 	DropdownMenuSeparator,
+	DropdownMenuSub,
+	DropdownMenuSubContent,
+	DropdownMenuSubTrigger,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { LanguageSwitcher } from "@/components/ui/language-switcher";
+import {
+	LANGUAGES,
+	type Language,
+	useLanguage,
+} from "@/contexts/LanguageContext";
+import { useUnreadCount } from "@/hooks/use-unread-count";
+
+const NAV_LINKS = [
+	{ label: "Explore", icon: SearchIcon },
+	{ href: "/dashboard", label: "Dashboard", icon: LayoutDashboardIcon },
+	{ label: "Inbox", icon: BellIcon },
+	{ href: "/messages", label: "Chats", icon: MessageSquareIcon },
+] satisfies { href?: string; label: string; icon: LucideIcon }[];
 
 export const Header = () => {
-	const router = useRouter();
-	const { user, isSignedIn, isLoaded } = useUser();
-	const { signOut } = useClerk();
-	const { resolvedTheme, setTheme } = useTheme();
+	const { isSignedIn, isLoaded } = useUser();
 
 	return (
-		<header className="mx-auto mb-12 w-full max-w-6xl rounded-3xl border border-border bg-card px-4 py-4 md:rounded-full md:px-6 lg:px-8">
-			<div className="flex items-center justify-between">
-				{/* Logo */}
-				<Link
-					href="/"
-					className="flex items-center gap-3 transition-all duration-300 hover:scale-105"
-				>
-					<Image
-						src="/logo/imvestor.png"
-						alt="Im-Vestor"
-						width={24}
-						height={24}
-					/>
-					<span className="hidden text-xl font-bold text-foreground md:block">
-						Im-Vestor-Leads
-					</span>
-				</Link>
+		<header className="mx-auto mb-12 flex w-full max-w-content items-center justify-between gap-4 px-4 py-4 md:px-6 lg:px-8">
+			<Link
+				href="/"
+				aria-label="Im-Vestor"
+				className="shrink-0 transition-transform hover:scale-105"
+			>
+				<Image
+					src="/logo/imvestor.png"
+					alt="Im-Vestor"
+					width={28}
+					height={28}
+				/>
+			</Link>
 
-				{/* Right side */}
-				{isLoaded && isSignedIn ? (
-					<div className="flex items-center gap-1">
-						<MessagesNavButton />
-						<DropdownMenu>
-							<DropdownMenuTrigger
-								render={
-									<Button
-										variant="ghost"
-										className="flex items-center gap-2"
-									/>
-								}
-							>
-								<span className="hidden md:inline">{user?.firstName}</span>
-								<Avatar className="size-6">
-									<AvatarImage src={user?.imageUrl} alt="Profile" />
-									<AvatarFallback>
-										<UserIcon className="size-4" />
-									</AvatarFallback>
-								</Avatar>
-							</DropdownMenuTrigger>
-							<DropdownMenuContent align="end">
-								<DropdownMenuItem onClick={() => router.push("/profile")}>
-									<UserIcon className="mr-2 size-4" />
-									Profile
-								</DropdownMenuItem>
-								<DropdownMenuItem
-									onClick={() =>
-										setTheme(resolvedTheme === "dark" ? "light" : "dark")
-									}
-								>
-									{resolvedTheme === "dark" ? (
-										<SunIcon className="mr-2 size-4" />
-									) : (
-										<MoonIcon className="mr-2 size-4" />
-									)}
-									{resolvedTheme === "dark" ? "Light mode" : "Dark mode"}
-								</DropdownMenuItem>
-								<DropdownMenuSeparator />
-								<DropdownMenuItem
-									variant="destructive"
-									onClick={() => signOut({ redirectUrl: "/" })}
-								>
-									<LogOutIcon className="mr-2 size-4" />
-									Sign out
-								</DropdownMenuItem>
-							</DropdownMenuContent>
-						</DropdownMenu>
-					</div>
-				) : (
-					<div className="flex items-center gap-2">
-						<LanguageSwitcher />
-						<SignInButton>
-							<Button variant="ghost" size="sm">
-								Sign in
-							</Button>
-						</SignInButton>
-						<SignUpButton>
-							<Button size="sm">Sign up</Button>
-						</SignUpButton>
-					</div>
-				)}
-			</div>
+			{isLoaded && isSignedIn && <NavLinks />}
+
+			{isLoaded && (isSignedIn ? <UserMenu /> : <AuthActions />)}
 		</header>
 	);
 };
+
+const NavLinks = () => {
+	const pathname = usePathname();
+	const [userId, setUserId] = useState<string | null>(null);
+	const { count, setCount, refresh } = useUnreadCount(userId);
+
+	useEffect(() => {
+		void getMyUserId().then((r) => {
+			if (r.ok) setUserId(r.data);
+		});
+	}, []);
+
+	useEffect(() => {
+		if (pathname?.startsWith("/messages")) {
+			setCount(0);
+			void refresh();
+		}
+	}, [pathname, setCount, refresh]);
+
+	return (
+		<nav className="hidden items-center gap-1 md:flex">
+			{NAV_LINKS.map(({ href, label, icon: Icon }) => {
+				const showBadge = href === "/messages" && count > 0;
+				return (
+					<Button
+						key={label}
+						variant={href && pathname === href ? "secondary" : "ghost"}
+						size="sm"
+						className="relative"
+						{...(href ? { render: <Link href={href} /> } : {})}
+					>
+						<Icon className="size-4" />
+						{label}
+						{showBadge ? (
+							<Badge className="ml-1 h-4 min-w-4 justify-center rounded-full px-1 text-[10px]">
+								{count > 99 ? "99+" : count}
+							</Badge>
+						) : null}
+					</Button>
+				);
+			})}
+		</nav>
+	);
+};
+
+const UserMenu = () => {
+	const { user } = useUser();
+	const { signOut } = useClerk();
+
+	return (
+		<DropdownMenu>
+			<DropdownMenuTrigger render={<Button variant="ghost" />}>
+				<span className="max-w-32 truncate text-sm font-medium">
+					{user?.fullName ?? user?.firstName}
+				</span>
+				<Avatar className="size-7">
+					<AvatarImage src={user?.imageUrl} alt="" />
+					<AvatarFallback>
+						<UserIcon className="size-4" />
+					</AvatarFallback>
+				</Avatar>
+			</DropdownMenuTrigger>
+
+			<DropdownMenuContent align="end">
+				<DropdownMenuItem render={<Link href="/profile" />}>
+					<UserIcon className="size-4" />
+					Profile
+				</DropdownMenuItem>
+				<ThemeMenuItem />
+				<LanguageMenu />
+				<DropdownMenuSeparator />
+				<DropdownMenuItem
+					variant="destructive"
+					onClick={() => signOut({ redirectUrl: "/" })}
+				>
+					<LogOutIcon className="size-4" />
+					Sign out
+				</DropdownMenuItem>
+			</DropdownMenuContent>
+		</DropdownMenu>
+	);
+};
+
+const ThemeMenuItem = () => {
+	const { resolvedTheme, setTheme } = useTheme();
+	const isDark = resolvedTheme === "dark";
+
+	return (
+		<DropdownMenuItem onClick={() => setTheme(isDark ? "light" : "dark")}>
+			{isDark ? (
+				<SunIcon className="size-4" />
+			) : (
+				<MoonIcon className="size-4" />
+			)}
+			{isDark ? "Light mode" : "Dark mode"}
+		</DropdownMenuItem>
+	);
+};
+
+const LanguageMenu = () => {
+	const { language, setLanguage } = useLanguage();
+
+	return (
+		<DropdownMenuSub>
+			<DropdownMenuSubTrigger>
+				<GlobeIcon className="size-4" />
+				Language
+			</DropdownMenuSubTrigger>
+			<DropdownMenuSubContent>
+				<DropdownMenuRadioGroup
+					value={language}
+					onValueChange={(value) => setLanguage(value as Language)}
+				>
+					{LANGUAGES.map(({ code, name, flag }) => (
+						<DropdownMenuRadioItem key={code} value={code} className="gap-2">
+							<Image
+								src={`https://flagcdn.com/h60/${flag}.png`}
+								alt=""
+								width={16}
+								height={12}
+								className="rounded-[2px]"
+							/>
+							{name}
+						</DropdownMenuRadioItem>
+					))}
+				</DropdownMenuRadioGroup>
+			</DropdownMenuSubContent>
+		</DropdownMenuSub>
+	);
+};
+
+const AuthActions = () => (
+	<div className="flex items-center gap-2">
+		<LanguageSwitcher />
+		<Button variant="ghost" size="sm" render={<Link href="/sign-in" />}>
+			Sign in
+		</Button>
+		<Button size="sm" render={<Link href="/sign-up" />}>
+			Sign up
+		</Button>
+	</div>
+);

@@ -4,6 +4,7 @@
 	"private": true,
 	"scripts": {
 		"dev": "next dev",
+		"ref": "BUN_PORT=5050 bun ./ref-preview/index.html",
 		"build": "next build",
 		"start": "next start",
 		"lint": "biome lint",
@@ -24,6 +25,7 @@
 		"clsx": "^2.1.1",
 		"cmdk": "^1.1.1",
 		"date-fns": "^4.4.0",
+		"embla-carousel-auto-scroll": "^8.6.0",
 		"embla-carousel-react": "^8.6.0",
 		"framer-motion": "^12.40.0",
 		"input-otp": "^1.4.2",
