@@ -30,7 +30,6 @@ export async function createCheckoutSession(
 
 	const useRecurring = recurring && !!product.recurring;
 	const priceId = useRecurring ? product.recurring?.priceId : product.priceId;
-	const mode = useRecurring ? "subscription" : product.mode;
 	if (!priceId) {
 		return {
 			ok: false,
@@ -41,6 +40,9 @@ export async function createCheckoutSession(
 	try {
 		const stripe = getStripe();
 		const origin = await getOrigin();
+
+		const price = await stripe.prices.retrieve(priceId);
+		const mode = price.recurring ? "subscription" : "payment";
 
 		const metadata = {
 			userId: user.id,
