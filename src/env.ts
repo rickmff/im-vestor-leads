@@ -12,6 +12,14 @@ const serverSchema = z.object({
 	NODE_ENV: z
 		.enum(["development", "test", "production"])
 		.default("development"),
+	STRIPE_SECRET_KEY: z.string().optional(),
+	STRIPE_WEBHOOK_SECRET: z.string().optional(),
+	STRIPE_PRICE_SUBSCRIPTION_MONTHLY: z.string().optional(),
+	STRIPE_PRICE_SUBSCRIPTION_ANNUAL: z.string().optional(),
+	STRIPE_PRICE_POKE_PACK_3: z.string().optional(),
+	STRIPE_PRICE_POKE_PACK_5: z.string().optional(),
+	STRIPE_PRICE_POKE_PACK_10: z.string().optional(),
+	STRIPE_PRICE_LEAD_CREDIT: z.string().optional(),
 });
 
 /**
@@ -22,6 +30,7 @@ const clientSchema = z.object({
 	NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().min(1),
 	NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
 	NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: z.string().min(1),
+	NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string().optional(),
 });
 
 /**
@@ -34,6 +43,8 @@ const clientEnv = {
 	NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
 	NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY:
 		process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+	NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:
+		process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
 };
 
 const isServer = typeof window === "undefined";

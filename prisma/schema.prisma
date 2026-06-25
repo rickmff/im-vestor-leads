@@ -57,6 +57,13 @@ model User {
   investmentCapacity InvestmentRange?
   sectors            Sector[]
 
+  // Shop / Stripe
+  pokes              Int     @default(1)
+  leadCredits        Int     @default(0)
+  subscriptionPlan   String? // "monthly" | "annual" | null
+  subscriptionStatus String? // Stripe subscription status, when applicable
+  stripeCustomerId   String? @unique
+
   lastSeenAt DateTime?
 
   sentMessages  Message[]      @relation("SentMessages")
@@ -109,6 +116,14 @@ model Notification {
   @@index([userId])
   @@index([userId, read])
   @@map("notifications")
+}
+
+model ProcessedStripeEvent {
+  id        String   @id // Stripe event id (evt_...) — guards against duplicate delivery
+  type      String
+  createdAt DateTime @default(now())
+
+  @@map("processed_stripe_events")
 }
 
 model BannedWord {
