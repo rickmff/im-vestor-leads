@@ -8,13 +8,14 @@ import {
 } from "@/components/ui/card";
 import { getOrCreateUser } from "@/lib/user";
 import { ProfileForm } from "./profile-form";
+import { Wallet } from "./wallet";
 
 export default async function ProfilePage() {
 	const user = await getOrCreateUser();
 	if (!user) redirect("/sign-in");
 
 	return (
-		<div className="mx-auto w-full max-w-2xl px-4 py-12">
+		<div className="mx-auto flex w-full max-w-2xl flex-col gap-6 px-4 py-12">
 			<Card>
 				<CardHeader>
 					<CardTitle>Your profile</CardTitle>
@@ -37,6 +38,14 @@ export default async function ProfilePage() {
 					/>
 				</CardContent>
 			</Card>
+
+			<Wallet
+				pokes={user.pokes}
+				leadCredits={user.leadCredits}
+				subscriptionPlan={user.subscriptionPlan}
+				subscriptionStatus={user.subscriptionStatus}
+				canManageBilling={Boolean(user.stripeCustomerId)}
+			/>
 		</div>
 	);
 }
