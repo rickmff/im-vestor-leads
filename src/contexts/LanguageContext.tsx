@@ -18,12 +18,12 @@ export type Language =
 	| "de-DE";
 
 export const LANGUAGES: { code: Language; name: string; flag: string }[] = [
-	{ code: "en-US", name: "English (US)", flag: "us" },
-	{ code: "pt-PT", name: "Português (PT)", flag: "pt" },
-	{ code: "es-ES", name: "Español (ES)", flag: "es" },
-	{ code: "fr-FR", name: "Français (FR)", flag: "fr" },
-	{ code: "it-IT", name: "Italiano (IT)", flag: "it" },
-	{ code: "de-DE", name: "Deutsch (DE)", flag: "de" },
+	{ code: "en-US", name: "English", flag: "us" },
+	{ code: "pt-PT", name: "Português", flag: "pt" },
+	{ code: "es-ES", name: "Español", flag: "es" },
+	{ code: "fr-FR", name: "Français", flag: "fr" },
+	{ code: "it-IT", name: "Italiano", flag: "it" },
+	{ code: "de-DE", name: "Deutsch", flag: "de" },
 ];
 
 type LanguageContextType = {
