@@ -22,7 +22,6 @@ export function AuthShell({
 		<div className="-mt-12 w-full text-white">
 			<div className="mx-auto flex min-h-[calc(100vh-6rem)] w-full max-w-5xl items-center px-4 py-10">
 				<div className="grid w-full overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02] shadow-[0_20px_80px_-20px_rgba(0,0,0,0.7)] backdrop-blur-xl lg:grid-cols-2">
-					{/* Brand panel */}
 					<div className="relative hidden flex-col justify-between gap-10 overflow-hidden border-white/10 border-r bg-gradient-to-br from-[#EDD689]/[0.08] to-transparent p-10 lg:flex">
 						<div className="-top-32 -right-24 pointer-events-none absolute h-80 w-80 rounded-full bg-[#E5CD82]/15 blur-3xl" />
 
@@ -65,7 +64,6 @@ export function AuthShell({
 						</p>
 					</div>
 
-					{/* Form panel */}
 					<div className="p-8 sm:p-10">
 						<div className="mx-auto flex max-w-sm flex-col">
 							<Link
