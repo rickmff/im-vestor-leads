@@ -21,6 +21,7 @@ type WalletProps = {
 	subscriptionPlan: string | null;
 	subscriptionStatus: string | null;
 	canManageBilling: boolean;
+	showBuyMore?: boolean;
 };
 
 export function Wallet({
@@ -29,6 +30,7 @@ export function Wallet({
 	subscriptionPlan,
 	subscriptionStatus,
 	canManageBilling,
+	showBuyMore = true,
 }: WalletProps) {
 	return (
 		<Card>
@@ -61,16 +63,20 @@ export function Wallet({
 					</div>
 				</div>
 
-				<div className="flex flex-wrap gap-2">
-					<Button render={<Link href="/shop" />}>Buy more</Button>
-					{canManageBilling && (
-						<form action={openBillingPortal}>
-							<Button type="submit" variant="outline">
-								Manage billing
-							</Button>
-						</form>
-					)}
-				</div>
+				{(showBuyMore || canManageBilling) && (
+					<div className="flex flex-wrap gap-2">
+						{showBuyMore && (
+							<Button render={<Link href="/shop" />}>Buy more</Button>
+						)}
+						{canManageBilling && (
+							<form action={openBillingPortal}>
+								<Button type="submit" variant="outline">
+									Manage billing
+								</Button>
+							</form>
+						)}
+					</div>
+				)}
 			</CardContent>
 		</Card>
 	);
