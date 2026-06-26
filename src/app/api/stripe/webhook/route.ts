@@ -129,6 +129,10 @@ async function fulfillInvoice(event: Stripe.Event): Promise<void> {
 
 async function syncSubscription(event: Stripe.Event): Promise<void> {
 	const subscription = event.data.object as Stripe.Subscription;
+	const productId = subscription.metadata?.productId;
+	const grant = productId ? PRODUCT_GRANTS[productId] : undefined;
+	if (!grant?.plan) return;
+
 	const stripeCustomerId = customerId(subscription.customer);
 	if (!stripeCustomerId) return;
 
