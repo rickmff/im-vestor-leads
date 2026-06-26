@@ -3,7 +3,11 @@
 import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { getShopProduct, getStripe } from "@/lib/stripe";
-import { getCurrentUser, getOrCreateUser } from "@/lib/user";
+import {
+	getCurrentUser,
+	getOrCreateStripeCustomerId,
+	getOrCreateUser,
+} from "@/lib/user";
 
 export type CheckoutResult =
 	| { ok: true; url: string }
@@ -40,6 +44,7 @@ export async function createCheckoutSession(
 	try {
 		const stripe = getStripe();
 		const origin = await getOrigin();
+		const customer = await getOrCreateStripeCustomerId(user);
 
 		const price = await stripe.prices.retrieve(priceId);
 		const mode = price.recurring ? "subscription" : "payment";
@@ -53,7 +58,7 @@ export async function createCheckoutSession(
 		const session = await stripe.checkout.sessions.create({
 			mode,
 			line_items: [{ price: priceId, quantity: 1 }],
-			customer_email: user.email || undefined,
+			customer,
 			success_url: `${origin}/shop?checkout=success&session_id={CHECKOUT_SESSION_ID}`,
 			cancel_url: `${origin}/shop?checkout=cancelled`,
 			metadata,

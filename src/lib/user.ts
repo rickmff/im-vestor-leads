@@ -2,6 +2,7 @@ import "server-only";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { UserRole } from "@/generated/prisma/enums";
 import { prisma } from "@/lib/prisma";
+import { getStripe } from "@/lib/stripe";
 
 function generateReferralCode(seed: string): string {
 	const base = seed
@@ -44,4 +45,23 @@ export async function getOrCreateUser() {
 			referralCode: generateReferralCode(name ?? email ?? userId),
 		},
 	});
+}
+
+export async function getOrCreateStripeCustomerId(user: {
+	id: string;
+	clerkId: string;
+	email: string;
+	stripeCustomerId: string | null;
+}): Promise<string> {
+	if (user.stripeCustomerId) return user.stripeCustomerId;
+
+	const customer = await getStripe().customers.create({
+		email: user.email || undefined,
+		metadata: { userId: user.id, clerkId: user.clerkId },
+	});
+	await prisma.user.update({
+		where: { id: user.id },
+		data: { stripeCustomerId: customer.id },
+	});
+	return customer.id;
 }
