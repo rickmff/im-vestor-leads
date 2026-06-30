@@ -6,6 +6,8 @@ import { getStripe, PRODUCT_GRANTS } from "@/lib/stripe";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
+const POKE_SUB_COOLDOWN_MS = 30 * 24 * 60 * 60 * 1000;
+
 function customerId(
 	customer: string | Stripe.Customer | Stripe.DeletedCustomer | null,
 ): string | undefined {
@@ -81,7 +83,36 @@ async function fulfillCheckout(event: Stripe.Event): Promise<void> {
 		return;
 	}
 
-	const pokeSubscription = session.mode === "subscription" && !grant.plan;
+	const customer = customerId(session.customer);
+	const isPokeSubscription = session.mode === "subscription" && !grant.plan;
+
+	if (isPokeSubscription) {
+		const existing = await prisma.user.findUnique({
+			where: { id: userId },
+			select: { pokeSubCreditedAt: true },
+		});
+		const last = existing?.pokeSubCreditedAt?.getTime() ?? 0;
+		const onCooldown = Date.now() - last < POKE_SUB_COOLDOWN_MS;
+
+		await prisma.$transaction([
+			prisma.processedStripeEvent.create({
+				data: { id: session.id, type: event.type },
+			}),
+			prisma.user.updateMany({
+				where: { id: userId },
+				data: {
+					...(onCooldown
+						? {}
+						: {
+								pokes: { increment: grant.pokes ?? 0 },
+								pokeSubCreditedAt: new Date(),
+							}),
+					...(customer ? { stripeCustomerId: customer } : {}),
+				},
+			}),
+		]);
+		return;
+	}
 
 	await prisma.$transaction([
 		prisma.processedStripeEvent.create({
@@ -90,18 +121,12 @@ async function fulfillCheckout(event: Stripe.Event): Promise<void> {
 		prisma.user.updateMany({
 			where: { id: userId },
 			data: {
-				...(pokeSubscription
-					? {}
-					: {
-							pokes: { increment: grant.pokes ?? 0 },
-							leadCredits: { increment: grant.leadCredits ?? 0 },
-						}),
+				pokes: { increment: grant.pokes ?? 0 },
+				leadCredits: { increment: grant.leadCredits ?? 0 },
 				...(grant.plan
 					? { subscriptionPlan: grant.plan, subscriptionStatus: "active" }
 					: {}),
-				...(customerId(session.customer)
-					? { stripeCustomerId: customerId(session.customer) }
-					: {}),
+				...(customer ? { stripeCustomerId: customer } : {}),
 			},
 		}),
 	]);
@@ -109,6 +134,8 @@ async function fulfillCheckout(event: Stripe.Event): Promise<void> {
 
 async function fulfillInvoice(event: Stripe.Event): Promise<void> {
 	const invoice = event.data.object as Stripe.Invoice;
+	if (invoice.billing_reason !== "subscription_cycle") return;
+
 	const meta = invoice.parent?.subscription_details?.metadata;
 	const userId = meta?.userId;
 	const productId = meta?.productId;
@@ -122,7 +149,10 @@ async function fulfillInvoice(event: Stripe.Event): Promise<void> {
 		}),
 		prisma.user.updateMany({
 			where: { id: userId },
-			data: { pokes: { increment: grant.pokes } },
+			data: {
+				pokes: { increment: grant.pokes },
+				pokeSubCreditedAt: new Date(),
+			},
 		}),
 	]);
 }

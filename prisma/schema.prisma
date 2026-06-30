@@ -57,11 +57,12 @@ model User {
   investmentCapacity InvestmentRange?
   sectors            Sector[]
 
-  pokes              Int     @default(1)
-  leadCredits        Int     @default(0)
+  pokes              Int       @default(1)
+  leadCredits        Int       @default(0)
   subscriptionPlan   String?
   subscriptionStatus String?
-  stripeCustomerId   String? @unique
+  stripeCustomerId   String?   @unique
+  pokeSubCreditedAt  DateTime?
 
   lastSeenAt DateTime?
 
