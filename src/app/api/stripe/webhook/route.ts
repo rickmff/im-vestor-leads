@@ -107,6 +107,7 @@ async function fulfillCheckout(event: Stripe.Event): Promise<void> {
 								pokes: { increment: grant.pokes ?? 0 },
 								pokeSubCreditedAt: new Date(),
 							}),
+					pokeCycleHigh: grant.pokes ?? 0,
 					...(customer ? { stripeCustomerId: customer } : {}),
 				},
 			}),
@@ -152,6 +153,7 @@ async function fulfillInvoice(event: Stripe.Event): Promise<void> {
 			data: {
 				pokes: { increment: grant.pokes },
 				pokeSubCreditedAt: new Date(),
+				pokeCycleHigh: grant.pokes,
 			},
 		}),
 	]);

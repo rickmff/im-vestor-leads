@@ -63,6 +63,7 @@ model User {
   subscriptionStatus String?
   stripeCustomerId   String?   @unique
   pokeSubCreditedAt  DateTime?
+  pokeCycleHigh      Int       @default(0)
 
   lastSeenAt DateTime?
 
