@@ -50,132 +50,188 @@
 }
 
 :root {
-  --background: #030014;
-  --foreground: oklch(0.987 0.002 197.1);
-  --card: oklch(0.218 0.008 223.9);
-  --card-foreground: oklch(0.987 0.002 197.1);
-  --popover: oklch(0.218 0.008 223.9);
-  --popover-foreground: oklch(0.987 0.002 197.1);
-  --primary: oklch(0.925 0.005 214.3);
-  --primary-foreground: oklch(0.218 0.008 223.9);
-  --secondary: oklch(0.275 0.011 216.9);
-  --secondary-foreground: oklch(0.987 0.002 197.1);
-  --muted: oklch(0.275 0.011 216.9);
-  --muted-foreground: oklch(0.723 0.014 214.4);
-  --accent: oklch(0.925 0.005 214.3);
-  --accent-foreground: oklch(0.218 0.008 223.9);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.56 0.021 213.5);
-  --chart-1: oklch(0.865 0.127 207.078);
-  --chart-2: oklch(0.715 0.143 215.221);
-  --chart-3: oklch(0.609 0.126 221.723);
-  --chart-4: oklch(0.52 0.105 223.128);
-  --chart-5: oklch(0.45 0.085 224.283);
-  --radius: 0.45rem;
-  --sidebar: oklch(0.218 0.008 223.9);
-  --sidebar-foreground: oklch(0.987 0.002 197.1);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.987 0.002 197.1);
-  --sidebar-accent: oklch(0.275 0.011 216.9);
-  --sidebar-accent-foreground: oklch(0.987 0.002 197.1);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.56 0.021 213.5);
+	--background: #030014;
+	--foreground: oklch(0.987 0.002 197.1);
+	--card: oklch(0.218 0.008 223.9);
+	--card-foreground: oklch(0.987 0.002 197.1);
+	--popover: oklch(0.218 0.008 223.9);
+	--popover-foreground: oklch(0.987 0.002 197.1);
+	--primary: oklch(0.925 0.005 214.3);
+	--primary-foreground: oklch(0.218 0.008 223.9);
+	--secondary: oklch(0.275 0.011 216.9);
+	--secondary-foreground: oklch(0.987 0.002 197.1);
+	--muted: oklch(0.275 0.011 216.9);
+	--muted-foreground: oklch(0.723 0.014 214.4);
+	--accent: oklch(0.925 0.005 214.3);
+	--accent-foreground: oklch(0.218 0.008 223.9);
+	--destructive: oklch(0.704 0.191 22.216);
+	--border: oklch(1 0 0 / 10%);
+	--input: oklch(1 0 0 / 15%);
+	--ring: oklch(0.56 0.021 213.5);
+	--chart-1: oklch(0.865 0.127 207.078);
+	--chart-2: oklch(0.715 0.143 215.221);
+	--chart-3: oklch(0.609 0.126 221.723);
+	--chart-4: oklch(0.52 0.105 223.128);
+	--chart-5: oklch(0.45 0.085 224.283);
+	--radius: 0.45rem;
+	--sidebar: oklch(0.218 0.008 223.9);
+	--sidebar-foreground: oklch(0.987 0.002 197.1);
+	--sidebar-primary: oklch(0.488 0.243 264.376);
+	--sidebar-primary-foreground: oklch(0.987 0.002 197.1);
+	--sidebar-accent: oklch(0.275 0.011 216.9);
+	--sidebar-accent-foreground: oklch(0.987 0.002 197.1);
+	--sidebar-border: oklch(1 0 0 / 10%);
+	--sidebar-ring: oklch(0.56 0.021 213.5);
 }
 
 @keyframes breathe {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
+	0%,
+	100% {
+		transform: scale(1);
+	}
+	50% {
+		transform: scale(1.05);
+	}
 }
 
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 0 rgba(229, 205, 130, 0.2); }
-  50% { box-shadow: 0 0 24px rgba(229, 205, 130, 0.5); }
+	0%,
+	100% {
+		box-shadow: 0 0 0 rgba(229, 205, 130, 0.2);
+	}
+	50% {
+		box-shadow: 0 0 24px rgba(229, 205, 130, 0.5);
+	}
 }
 
 @keyframes landing-fade-in {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
+	from {
+		opacity: 0;
+		transform: translateY(12px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
 }
 
 @keyframes scroll-x {
-  from { transform: translateX(0); }
-  to { transform: translateX(calc(-100% / 3)); }
+	from {
+		transform: translateX(0);
+	}
+	to {
+		transform: translateX(calc(-100% / 3));
+	}
+}
+
+/* ShinyText sweep */
+@keyframes shine {
+	0% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: -100% 50%;
+	}
+}
+
+/* GradientText loop */
+@keyframes gradient-flow {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
 }
 
 .animate-scroll-x {
-  animation: scroll-x 30s linear infinite;
+	animation: scroll-x 30s linear infinite;
 }
 
 .animate-scroll-x:hover {
-  animation-play-state: paused;
+	animation-play-state: paused;
 }
 
 .animate-breathe {
-  animation: breathe 4s ease-in-out infinite;
+	animation: breathe 4s ease-in-out infinite;
 }
 
 .animate-pulse-glow {
-  animation: pulse-glow 2.5s ease-in-out infinite;
+	animation: pulse-glow 2.5s ease-in-out infinite;
 }
 
 .animate-landing-fade-in {
-  animation: landing-fade-in 0.6s ease both;
+	animation: landing-fade-in 0.6s ease both;
 }
 
 @keyframes breathe-slow {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.15); }
+	0%,
+	100% {
+		transform: scale(1);
+	}
+	50% {
+		transform: scale(1.15);
+	}
 }
 
 .animate-breathe-slow {
-  animation: breathe-slow 6s ease-in-out infinite;
+	animation: breathe-slow 6s ease-in-out infinite;
 }
 
 .bg-primary-gradient {
-  background-image: linear-gradient(to right, #edd689, #d3b662);
+	background-image: linear-gradient(to right, #edd689, #d3b662);
 }
 
 @keyframes marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(calc(-100% - var(--gap))); }
+	from {
+		transform: translateX(0);
+	}
+	to {
+		transform: translateX(calc(-100% - var(--gap)));
+	}
 }
 
 @keyframes marquee-vertical {
-  from { transform: translateY(0); }
-  to { transform: translateY(calc(-100% - var(--gap))); }
+	from {
+		transform: translateY(0);
+	}
+	to {
+		transform: translateY(calc(-100% - var(--gap)));
+	}
 }
 
 .animate-marquee {
-  animation: marquee var(--duration) infinite linear;
+	animation: marquee var(--duration) infinite linear;
 }
 
 .animate-marquee-vertical {
-  animation: marquee-vertical var(--duration) linear infinite;
+	animation: marquee-vertical var(--duration) linear infinite;
 }
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-    position: relative;
-  }
-  body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
-    background: radial-gradient(
-      60% 45% at 50% 0%,
-      rgba(229, 205, 130, 0.1),
-      transparent 70%
-    );
-  }
-  html {
-    @apply font-sans;
-  }
+	* {
+		@apply border-border outline-ring/50;
+	}
+	body {
+		@apply bg-background text-foreground;
+		position: relative;
+	}
+	body::before {
+		content: "";
+		position: fixed;
+		inset: 0;
+		z-index: -1;
+		pointer-events: none;
+		background: radial-gradient(
+			60% 45% at 50% 0%,
+			rgba(229, 205, 130, 0.1),
+			transparent 70%
+		);
+	}
+	html {
+		@apply font-sans;
+	}
 }
