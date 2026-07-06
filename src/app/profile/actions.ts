@@ -2,8 +2,12 @@
 
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { getStripe } from "@/lib/stripe";
+import { getOrCreateUser } from "@/lib/user";
 
 const sectorValues = [
 	"TECHNOLOGY",
@@ -72,4 +76,23 @@ export async function updateProfile(
 
 	revalidatePath("/profile");
 	return { ok: true };
+}
+
+export async function openBillingPortal(): Promise<void> {
+	const user = await getOrCreateUser();
+	if (!user?.stripeCustomerId) {
+		redirect("/shop");
+	}
+
+	const h = await headers();
+	const host = h.get("host") ?? "localhost:3000";
+	const proto = h.get("x-forwarded-proto") ?? "http";
+	const origin = h.get("origin") ?? `${proto}://${host}`;
+
+	const session = await getStripe().billingPortal.sessions.create({
+		customer: user.stripeCustomerId,
+		return_url: `${origin}/profile`,
+	});
+
+	redirect(session.url);
 }

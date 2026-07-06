@@ -15,6 +15,10 @@ import Link from "next/link";
 import { useTheme } from "next-themes";
 import { useEffect } from "react";
 
+import BlurText from "@/components/BlurText";
+import GradientText from "@/components/GradientText";
+import ShinyText from "@/components/ShinyText";
+import SpotlightCard from "@/components/SpotlightCard";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/hooks/use-translation";
 
@@ -51,6 +55,10 @@ const StarField = dynamic(() => import("@/components/ui/StarField"), {
 	),
 });
 
+const Particles = dynamic(() => import("@/components/Particles"), {
+	ssr: false,
+});
+
 const GOLD_BUTTON =
 	"bg-gradient-to-r from-[#EDD689] to-[#D3B662] text-black hover:opacity-90";
 
@@ -75,39 +83,69 @@ export default function Home() {
 		<div className="-mt-12 w-full overflow-hidden text-white">
 			<main className="min-h-screen pt-16">
 				<div className="flex w-full flex-col items-center text-center">
-					<div className="flex flex-col items-center text-center">
-						<div className="relative">
-							<Image
-								src="/logo/imvestor.png"
-								alt="Im-Vestor Leads"
-								width={64}
-								height={64}
+					<div className="relative flex w-full flex-col items-center text-center">
+						<div className="absolute inset-0 -bottom-16">
+							<Particles
+								className="h-full w-full"
+								particleColors={["#EDD689", "#E5CD82", "#ffffff"]}
+								particleCount={220}
+								particleSpread={10}
+								speed={0.08}
+								particleBaseSize={90}
+								moveParticlesOnHover
+								alphaParticles
+								disableRotation
 							/>
 						</div>
-						<span className="mt-2 text-2xl font-medium">Im-Vestor Leads</span>
-						<h1 className="mt-8 md:mt-16 px-4 font-['Segoe UI'] text-3xl sm:text-5xl md:text-[84px] leading-[120%] bg-gradient-to-b from-white to-white/50 bg-clip-text text-transparent">
-							{t("weMeanBusiness")}
-						</h1>
-						<span className="mt-4 md:mt-6 w-full md:w-2/3 px-4 font-['Segoe UI'] text-base md:text-xl leading-[140%] text-white/50 font-light">
-							{t("connectingEntrepreneursAndInvestors")}
-						</span>
-						<div>
-							<Button
-								render={<Link href="/sign-up" />}
-								className={`mt-8 md:mt-16 rounded-full transition-all duration-500 hover:scale-x-105 hover:opacity-75 ${GOLD_BUTTON}`}
-							>
-								{t("getStarted")} <ArrowUpRight />
-							</Button>
+						<div className="pointer-events-none relative z-10 flex flex-col items-center text-center">
+							<div className="relative">
+								<Image
+									src="/logo/imvestor.png"
+									alt="Im-Vestor Leads"
+									width={64}
+									height={64}
+								/>
+							</div>
+							<span className="mt-2 text-2xl font-medium">Im-Vestor Leads</span>
+							<h1 className="mt-8 md:mt-16 px-4">
+								<BlurText
+									text={t("weMeanBusiness")}
+									animateBy="words"
+									direction="top"
+									delay={120}
+									className="justify-center font-['Segoe UI'] text-3xl sm:text-5xl md:text-[84px] leading-[120%] [&>span]:bg-gradient-to-b [&>span]:from-white [&>span]:to-white/50 [&>span]:bg-clip-text [&>span]:text-transparent"
+								/>
+							</h1>
+							<span className="mt-4 md:mt-6 w-full md:w-2/3 px-4 font-['Segoe UI'] text-base md:text-xl leading-[140%] font-light">
+								<ShinyText
+									text={t("connectingEntrepreneursAndInvestors")}
+									color="#8a8a99"
+									shineColor="#EDD689"
+									speed={3}
+								/>
+							</span>
+							<div className="pointer-events-auto">
+								<Button
+									render={<Link href="/sign-up" />}
+									className={`mt-8 md:mt-16 rounded-full transition-all duration-500 hover:scale-x-105 hover:opacity-75 ${GOLD_BUTTON}`}
+								>
+									{t("getStarted")} <ArrowUpRight />
+								</Button>
+							</div>
 						</div>
 					</div>
 
 					<div className="mt-16 md:mt-32 py-12 md:py-24 w-full px-4 bg-gradient-to-b from-[#030014] to-black">
-						<h2 className="mb-8 md:mb-12 px-4 font-['Segoe UI'] text-3xl sm:text-5xl md:text-[84px] leading-[120%] bg-gradient-to-b from-white to-white/50 bg-clip-text text-transparent">
-							{t("whyChooseImVestor")}{" "}
-							<span className="bg-primary-gradient bg-clip-text text-transparent">
-								Im-Vestor Leads
-							</span>
+						<h2 className="px-4 font-['Segoe UI'] text-3xl sm:text-5xl md:text-[84px] leading-[120%] bg-gradient-to-b from-white to-white/50 bg-clip-text text-transparent">
+							{t("whyChooseImVestor")}
 						</h2>
+						<GradientText
+							colors={["#EDD689", "#D3B662", "#8A6E2F", "#EDD689"]}
+							animationSpeed={5}
+							className="mb-8 md:mb-12 px-4 font-['Segoe UI'] text-3xl sm:text-5xl md:text-[84px] leading-[120%]"
+						>
+							Im-Vestor Leads
+						</GradientText>
 
 						<div className="mx-auto grid max-w-4xl grid-cols-1 gap-4 text-center md:grid-cols-3 md:grid-rows-3 md:text-start relative opacity-70">
 							<div className="absolute inset-0 z-10 pointer-events-none flex items-center justify-center animate-breathe">
@@ -121,8 +159,10 @@ export default function Home() {
 									<div className="absolute top-1/2 left-1/2 h-2/3 w-full -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#E5CD82]/10 blur-3xl" />
 								</div>
 							</div>
-							<div className="col-span-1 rounded-2xl border-2 border-white/10 bg-gradient-to-br from-[#38bdf8]/10 to-[#030014]/80 p-6 backdrop-blur-md md:col-span-2 relative overflow-hidden group hover:scale-[1.02] hover:brightness-110 hover:shadow-[0_0_20px_rgba(56,189,248,0.3)] transition-all duration-300">
-								<div className="absolute inset-0 bg-gradient-to-tr from-[#38bdf8]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+							<SpotlightCard
+								spotlightColor="rgba(56, 189, 248, 0.2)"
+								className="col-span-1 rounded-2xl border-2 border-white/10 bg-gradient-to-br from-[#38bdf8]/10 to-[#030014]/80 p-6 backdrop-blur-md md:col-span-2 group hover:scale-[1.02] hover:shadow-[0_0_20px_rgba(56,189,248,0.3)] transition-[transform,box-shadow] duration-300"
+							>
 								<div className="flex flex-col items-center text-center relative z-10">
 									<div className="relative">
 										<div className="absolute inset-0 rounded-full bg-[#38bdf8]/20 blur-md animate-breathe" />
@@ -135,10 +175,12 @@ export default function Home() {
 										{t("featurePublishDesc")}
 									</p>
 								</div>
-							</div>
+							</SpotlightCard>
 
-							<div className="col-span-1 rounded-2xl border-2 border-white/10 bg-gradient-to-br from-[#a855f7]/10 to-[#030014]/80 p-6 backdrop-blur-md relative overflow-hidden group hover:scale-[1.02] hover:brightness-110 hover:shadow-[0_0_20px_rgba(168,85,247,0.3)] transition-all duration-300">
-								<div className="absolute inset-0 bg-gradient-to-tr from-[#a855f7]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+							<SpotlightCard
+								spotlightColor="rgba(168, 85, 247, 0.2)"
+								className="col-span-1 rounded-2xl border-2 border-white/10 bg-gradient-to-br from-[#a855f7]/10 to-[#030014]/80 p-6 backdrop-blur-md group hover:scale-[1.02] hover:shadow-[0_0_20px_rgba(168,85,247,0.3)] transition-[transform,box-shadow] duration-300"
+							>
 								<div className="flex flex-col items-center text-center relative z-10">
 									<div className="relative">
 										<div className="absolute inset-0 rounded-full bg-[#a855f7]/20 blur-md animate-breathe" />
@@ -151,10 +193,12 @@ export default function Home() {
 										{t("featureDiscoverDesc")}
 									</p>
 								</div>
-							</div>
+							</SpotlightCard>
 
-							<div className="row-span-1 rounded-2xl border-2 border-white/10 bg-gradient-to-br from-[#22d3ee]/10 to-[#030014]/80 p-6 backdrop-blur-md md:row-span-2 relative overflow-hidden group hover:scale-[1.02] hover:brightness-110 hover:shadow-[0_0_20px_rgba(34,211,238,0.3)] transition-all duration-300">
-								<div className="absolute inset-0 bg-gradient-to-tr from-[#22d3ee]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+							<SpotlightCard
+								spotlightColor="rgba(34, 211, 238, 0.2)"
+								className="row-span-1 rounded-2xl border-2 border-white/10 bg-gradient-to-br from-[#22d3ee]/10 to-[#030014]/80 p-6 backdrop-blur-md md:row-span-2 group hover:scale-[1.02] hover:shadow-[0_0_20px_rgba(34,211,238,0.3)] transition-[transform,box-shadow] duration-300"
+							>
 								<div className="flex h-full flex-col items-center justify-center text-center relative z-10">
 									<div className="relative">
 										<div className="absolute inset-0 rounded-full bg-[#22d3ee]/20 blur-md animate-breathe" />
@@ -167,7 +211,7 @@ export default function Home() {
 										{t("featureConnectDesc")}
 									</p>
 								</div>
-							</div>
+							</SpotlightCard>
 
 							<div className="hidden flex-col items-center justify-center md:flex">
 								<Image
@@ -178,8 +222,10 @@ export default function Home() {
 								/>
 							</div>
 
-							<div className="rounded-2xl border-2 border-white/10 bg-gradient-to-br from-[#facc15]/10 to-[#030014]/80 p-6 backdrop-blur-md relative overflow-hidden group hover:scale-[1.02] hover:brightness-110 hover:shadow-[0_0_20px_rgba(250,204,21,0.3)] transition-all duration-300">
-								<div className="absolute inset-0 bg-gradient-to-tr from-[#facc15]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+							<SpotlightCard
+								spotlightColor="rgba(250, 204, 21, 0.2)"
+								className="rounded-2xl border-2 border-white/10 bg-gradient-to-br from-[#facc15]/10 to-[#030014]/80 p-6 backdrop-blur-md group hover:scale-[1.02] hover:shadow-[0_0_20px_rgba(250,204,21,0.3)] transition-[transform,box-shadow] duration-300"
+							>
 								<div className="flex flex-col items-center text-center relative z-10">
 									<div className="relative">
 										<div className="absolute inset-0 rounded-full bg-[#facc15]/20 blur-md animate-breathe" />
@@ -190,10 +236,12 @@ export default function Home() {
 									</h2>
 									<p className="mt-2 text-gray-300">{t("featureUnlockDesc")}</p>
 								</div>
-							</div>
+							</SpotlightCard>
 
-							<div className="col-span-1 rounded-2xl border-2 border-white/10 bg-gradient-to-br from-[#f87171]/10 to-[#030014]/80 p-6 backdrop-blur-md md:col-span-2 relative overflow-hidden group hover:scale-[1.02] hover:brightness-110 hover:shadow-[0_0_20px_rgba(248,113,113,0.3)] transition-all duration-300">
-								<div className="absolute inset-0 bg-gradient-to-tr from-[#f87171]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+							<SpotlightCard
+								spotlightColor="rgba(248, 113, 113, 0.2)"
+								className="col-span-1 rounded-2xl border-2 border-white/10 bg-gradient-to-br from-[#f87171]/10 to-[#030014]/80 p-6 backdrop-blur-md md:col-span-2 group hover:scale-[1.02] hover:shadow-[0_0_20px_rgba(248,113,113,0.3)] transition-[transform,box-shadow] duration-300"
+							>
 								<div className="flex flex-col items-center text-center relative z-10">
 									<div className="relative">
 										<div className="absolute inset-0 rounded-full bg-[#f87171]/20 blur-md animate-breathe" />
@@ -204,7 +252,7 @@ export default function Home() {
 									</h2>
 									<p className="mt-2 text-gray-300">{t("featureSecureDesc")}</p>
 								</div>
-							</div>
+							</SpotlightCard>
 						</div>
 					</div>
 
@@ -216,8 +264,10 @@ export default function Home() {
 								</h2>
 								<div className="p-6">
 									<div className="mx-auto flex max-w-4xl flex-col justify-center gap-10 md:flex-row">
-										<div className="flex flex-col items-center rounded-2xl border-2 border-white/10 bg-[#030014]/20 bg-opacity-30 px-6 py-16 backdrop-blur-md relative overflow-hidden group hover:scale-105 hover:brightness-110 hover:shadow-[0_0_25px_rgba(229,205,130,0.3)] transition-all duration-300">
-											<div className="absolute inset-0 bg-gradient-to-tr from-[#E5CD82]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+										<SpotlightCard
+											spotlightColor="rgba(229, 205, 130, 0.18)"
+											className="flex flex-col items-center rounded-2xl border-2 border-white/10 bg-[#030014]/20 bg-opacity-30 px-6 py-16 backdrop-blur-md group hover:scale-105 hover:shadow-[0_0_25px_rgba(229,205,130,0.3)] transition-[transform,box-shadow] duration-300"
+										>
 											<div className="relative z-10 group-hover:-translate-y-2 transition-transform duration-300">
 												<Image
 													src={"/images/astronaut.png"}
@@ -240,9 +290,11 @@ export default function Home() {
 												{t("joinAs")} {t("entrepreneur")}
 												<ArrowRight className="ml-2" />
 											</Button>
-										</div>
-										<div className="flex flex-col items-center rounded-2xl border-2 border-white/10 bg-[#030014]/20 bg-opacity-30 px-6 py-16 backdrop-blur-md relative overflow-hidden group hover:scale-105 hover:brightness-110 hover:shadow-[0_0_25px_rgba(229,205,130,0.3)] transition-all duration-300">
-											<div className="absolute inset-0 bg-gradient-to-tr from-[#E5CD82]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+										</SpotlightCard>
+										<SpotlightCard
+											spotlightColor="rgba(229, 205, 130, 0.18)"
+											className="flex flex-col items-center rounded-2xl border-2 border-white/10 bg-[#030014]/20 bg-opacity-30 px-6 py-16 backdrop-blur-md group hover:scale-105 hover:shadow-[0_0_25px_rgba(229,205,130,0.3)] transition-[transform,box-shadow] duration-300"
+										>
 											<div className="relative z-10 mt-6 group-hover:-translate-y-2 transition-transform duration-300">
 												<Image
 													src={"/images/rocket.png"}
@@ -265,7 +317,7 @@ export default function Home() {
 												{t("joinAs")} {t("investor")}
 												<ArrowRight className="ml-2" />
 											</Button>
-										</div>
+										</SpotlightCard>
 									</div>
 								</div>
 							</div>

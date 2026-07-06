@@ -57,6 +57,14 @@ model User {
   investmentCapacity InvestmentRange?
   sectors            Sector[]
 
+  pokes              Int       @default(1)
+  leadCredits        Int       @default(0)
+  subscriptionPlan   String?
+  subscriptionStatus String?
+  stripeCustomerId   String?   @unique
+  pokeSubCreditedAt  DateTime?
+  pokeCycleHigh      Int       @default(0)
+
   lastSeenAt DateTime?
 
   sentMessages  Message[]      @relation("SentMessages")
@@ -109,6 +117,14 @@ model Notification {
   @@index([userId])
   @@index([userId, read])
   @@map("notifications")
+}
+
+model ProcessedStripeEvent {
+  id        String   @id
+  type      String
+  createdAt DateTime @default(now())
+
+  @@map("processed_stripe_events")
 }
 
 model BannedWord {

@@ -10,9 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 type SignInFormProps = {
-	/** Called after a successful sign-in. Defaults to navigating to /dashboard. */
 	onSuccess?: () => void;
-	/** When set, the "Sign up" link becomes an in-place toggle instead of a route change. */
 	onSwitchToSignUp?: () => void;
 };
 
@@ -33,6 +31,10 @@ export function SignInForm({
 			const attempt = await signIn.password({ identifier: email, password });
 			if (attempt.error) {
 				toast.error(clerkError(attempt.error) ?? "Could not sign in");
+				return;
+			}
+			if (signIn.status !== "complete") {
+				toast.error("Additional verification is required to sign in.");
 				return;
 			}
 			const finalized = await signIn.finalize();
